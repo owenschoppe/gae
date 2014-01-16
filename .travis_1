@@ -1,0 +1,33 @@
+language: python
+python:
+- '2.7'
+before_script:
+- cd ..
+- wget http://googleappengine.googlecode.com/files/google_appengine_1.8.2.zip
+- unzip google_appengine_1.8.2.zip
+- rm google_appengine_1.8.2.zip
+- sudo apt-get install python-imaging
+install:
+- sudo pip install -r requirements.txt --use-mirrors
+script:
+- git clone https://github.com/andrewbeng89/mitb_gae_demo.git deploy
+after_success:
+- google_appengine/appcfg.py --oauth2_refresh_token=$MY_GAE_TOKEN update deploy/
+- cd deploy
+- git branch -a
+- git checkout gh-pages
+- ls
+- git checkout master -- public
+- git checkout master -- index.html
+- git pull origin gh-pages
+- git add ./public
+- git add ./index.html
+- git config --global user.email "andrew.beng.2010@sis.smu.edu.sg"
+- git config --global user.name "andrewbeng89"
+- git commit -m "travis-ci update"
+- git status
+- git push https://$MY_GITHUB_TOKEN@github.com/owenschoppe/gae.git gh-pages
+env:
+  global:
+  - secure: HvPyuGNq+ICvE5Z3TUp+T8i1V3ajJJUof4AZJ+z2SdS8iAA6nsA/DsbmnbwIfL+wzRGL+3Ab0FdsgmsEbkx4ptAJdMxfeaTNyn1d2bNWmS6DjXYVQSawiEaoUBVfoc8dzwm7K9/cjSNunHOYKQb/RBjGlRSpUAqt5qhjXvmA2lA=
+  - secure: PYZbx6/Pxi3aqWXHEz7y1rSCyA9EfEXypTI69yh6NCJcqxEPhMUi3GPYWucVpPEsktbBs43C1e143zwTT8d7ARKAkvkm7ZSe9HMWyI204i8Z2WFuDzUIt86GiCynFOmzBQ3nFFLNGQ7Hhwrc7gljptZ/md5NC1qe70h66WUoIZI=
